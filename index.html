@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aim Trainer</title>
+<style>
+body{margin:0;background:#10141d;color:white;font-family:Arial;text-align:center}
+h2{color:#55d6be}
+canvas{width:95%;max-width:700px;background:#080c13;border:2px solid #55d6be;border-radius:12px;touch-action:manipulation}
+button{padding:12px 20px;margin:8px;border:0;border-radius:8px;background:#55d6be;font-weight:bold}
+</style>
+</head>
+<body>
+<h2>Aim Trainer</h2>
+<p>اضغط على الأهداف واختبر سرعتك</p>
+<p>النقاط: <span id="score">0</span></p>
+<canvas id="game" width="700" height="420"></canvas>
+<br>
+<button onclick="start()">ابدأ التدريب</button>
+<script>
+const c=document.getElementById('game');
+const ctx=c.getContext('2d');
+let target={x:350,y:210,r:22};
+let score=0,running=false;
+function draw(){
+ctx.clearRect(0,0,c.width,c.height);
+ctx.strokeStyle='#55d6be';
+ctx.lineWidth=2;
+ctx.beginPath();ctx.arc(target.x,target.y,target.r,0,Math.PI*2);ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(target.x-32,target.y);ctx.lineTo(target.x+32,target.y);
+ctx.moveTo(target.x,target.y-32);ctx.lineTo(target.x,target.y+32);ctx.stroke();
+ctx.fillStyle='#ff5364';
+ctx.beginPath();ctx.arc(target.x,target.y,7,0,Math.PI*2);ctx.fill();
+}
+function move(){
+target.x=30+Math.random()*(c.width-60);
+target.y=30+Math.random()*(c.height-60);
+draw();
+}
+function start(){score=0;running=true;document.getElementById('score').textContent=score;move();}
+c.addEventListener('pointerdown',e=>{
+if(!running)return;
+const rect=c.getBoundingClientRect();
+const x=(e.clientX-rect.left)*c.width/rect.width;
+const y=(e.clientY-rect.top)*c.height/rect.height;
+if(Math.hypot(x-target.x,y-target.y)<target.r){
+score++;
+document.getElementById('score').textContent=score;
+move();
+}
+});
+draw();
+</script>
+</body>
+</html>
